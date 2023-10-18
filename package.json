@@ -1,0 +1,16 @@
+{
+  "name": "plants-data-scrapper",
+  "version": "1.0.0",
+  "description": "Plants Data Scrapper",
+  "main": "index.js",
+  "author": {
+    "name": "Ashhad Rasool",
+    "email": "ashhad.rasool22@gmail.com"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.3.8"
+  }
+}
