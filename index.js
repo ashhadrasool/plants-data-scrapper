@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const Piscina = require("piscina");
 
 async function scrapPfafWebsite() {
     const browser = await puppeteer.launch({
@@ -227,6 +228,36 @@ async function scrapeWebsite(){
     await browser.close();
 }
 
-// scrapPfafWebsite();
+const runThreadedScrapperJobs = async () => {
+    const Piscina = require("piscina");
 
-scrapeWebsite();
+    const pool = new Piscina({minThreads: 8});
+    const options = {
+        filename: './scrapper-worker.js',
+    }
+    const jobList = [{
+        url: 'https://www.treesandshrubsonline.org/articles',
+        type: "TREES_AND_SHRUB_ONLINE"
+    }]
+
+    const tableName = 'SPECIES';
+    const jobPromises = [];
+
+    for (let i = 0; i < jobList.length; i++) {
+        const url = jobList[i].url;
+        jobPromises.push(pool.run({url, worker: i }, options))
+    }
+
+    Promise.all(jobPromises).then(() => {
+        console.log("Done")
+    });
+
+}
+
+// scrapPfafWebsite();
+// scrapeWebsite();
+
+runThreadedScrapperJobs();
+
+
+
