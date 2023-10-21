@@ -138,29 +138,6 @@ async function scrapeWebsite(){
     });
     const page = await browser.newPage();
 
-    // await page.goto('https://www.treesandshrubsonline.org/articles');
-    //
-    // const urls = await page.evaluate(() => {
-    //     const hrefs = [];
-    //
-    //     const plantElements = document.querySelector('.uk-grid.uk-grid-stack');
-    //
-    //     const anchorElements = Array.from(plantElements.querySelectorAll('a'));
-    //
-    //     anchorElements.forEach(anchor => {
-    //         const href = anchor.getAttribute('href');
-    //         if (href && !href.includes('#')) {
-    //             count = href.split('/').length;
-    //             if(count==5){
-    //                 hrefs.push('https://www.treesandshrubsonline.org'+href);
-    //             }
-    //
-    //         }
-    //     });
-    //
-    //     return hrefs;
-    // });
-    // console.log(urls);
 
     const urls = ['https://www.treesandshrubsonline.org/articles/abelia/abelia-chinensis/'];
 
@@ -236,9 +213,15 @@ const runThreadedScrapperJobs = async () => {
         filename: './scrapper-worker.js',
     }
     const jobList = [{
-        url: 'https://www.treesandshrubsonline.org/articles',
-        type: "TREES_AND_SHRUB_ONLINE"
+        url: 'https://www.treesandshrubsonline.org/articles/abelia/abelia-chinensis/',
     }]
+    // const jobList = [{
+    //     url: 'https://pfaf.org/User/Plant.aspx?LatinName=Pteridium+aquilinum',
+    // }]
+
+    // https://pfaf.org/user/DatabaseSearhResult.aspx?LatinName=A%
+
+    // 'https://www.treesandshrubsonline.org/articles'
 
     const tableName = 'SPECIES';
     const jobPromises = [];

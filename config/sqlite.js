@@ -1,4 +1,3 @@
-const sqlite = require('sqlite');
 const sqlite3 = require('sqlite3');
 
 const {valueSymbol} = require("piscina");
@@ -9,7 +8,7 @@ class SQLiteDatabase {
     }
 
     async openConnection(){
-        this.db = await sqlite.open({filename: this.filename, driver: sqlite3.Database});
+        this.db = await new sqlite3.Database(this.filename);
     }
 
     async insertIntoTable(tableName, dataToInsert){
@@ -18,14 +17,22 @@ class SQLiteDatabase {
 
         const query = `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${Array(values.length).fill('?').join(', ')})`;
 
-        const result = await this.db.run(query, values);
+        return new Promise((resolve, reject) => {
+            this.db.run(query, values, function(err, rows) {
+                if (err) {
+                    reject(err);
+                } else {
+                    console.log('Row inserted successfully.');
+                    resolve([this]);
+                }
+            });
+        });
 
-        console.log('Row inserted successfully.');
     }
 
     jsonToSqlColumnsAndValues(tableName, data) {
         const keys = Object.keys(data);
-        const values = keys.map(key => data[key]);
+        const values = keys.map(key => JSON.stringify(data[key]));
         const columns = keys.map(key => key.replace(' ', '_').toLowerCase());
 
         return {
