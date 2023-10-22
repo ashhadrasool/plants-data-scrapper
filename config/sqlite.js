@@ -70,6 +70,30 @@ class SQLiteDatabase {
         });
     }
 
+    async updateTable(tableName, newValues, conditions){
+        const conditionKeys = Object.keys(conditions);
+        const conditionValues = Object.values(conditions);
+        const conditionClauses = conditionKeys.map(key => `${key} = ?`).join(' AND ');
+
+        const newValueKeys = Object.keys(newValues);
+        const newValueClauses = newValueKeys.map(key => `${key} = ?`).join(', ');
+
+        const query = `UPDATE ${tableName} SET ${newValueClauses} WHERE ${conditionClauses}`;
+
+        const values = [...Object.values(newValues), ...conditionValues];
+
+        return new Promise((resolve, reject) => {
+            this.db.run(query, values, function (err) {
+                if (err) {
+                    reject(err);
+                }else {
+                    console.log('Row updated successfully.');
+                    resolve(this.changes);
+                }
+            });
+        });
+    }
+
     jsonToSqlColumnsAndValues(tableName, data) {
 
         if(Array.isArray(data)){

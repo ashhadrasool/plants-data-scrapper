@@ -34,8 +34,9 @@ const runPageScrapperJobs = async () => {
 
     const sqLiteDatabase = new SQLiteDatabase();
     sqLiteDatabase.openConnection();
-    const jobList = await sqLiteDatabase.selectTable('scraper_jobs', {done: 0});
+    let jobList = await sqLiteDatabase.selectTable('scraper_jobs', {done: 0});
 
+    jobList = jobList.slice(0,1);
     // const jobList = [
     // {
     // url: 'https://www.treesandshrubsonline.org/articles/abelia/abelia-chinensis/',
@@ -52,9 +53,9 @@ const runPageScrapperJobs = async () => {
     for (let i = 0; i < jobList.length; i++) {
         const url = jobList[i].url;
         const urlType = jobList[i].urlType;
-        jobPromises.push(pool.run({url, urlType, worker: i, }, options).then(
-            sqLiteDatabase.up
-        ))
+        jobPromises.push(pool.run({url, urlType, worker: i, }, options).then( ()=>
+            sqLiteDatabase.updateTable('scraper_jobs',{done: 1}, {url})
+        ).catch(e => console.log(e)));
     }
     await Promise.all(jobPromises).then(() => {
         console.log("Done")
