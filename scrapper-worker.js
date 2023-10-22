@@ -1,30 +1,33 @@
-const DatabaseManager = require("./config/database-manager");
+const {SQLiteDatabase} = require("./config/sqlite");
 const path = require('path');
 const treesAndShrubScraper = require('./scrapper/trees-and-shrubs-scrapper');
 const pfascraper = require('./scrapper/pfa-scrapper');
 
 const dbName = 'plants-sqlite.db';
 
-async function(){
-
-}
-
 module.exports = async function ({ url, urlType, workerId }) {
     const filePath = path.join(__dirname, dbName);
 
-    const dbManager = new DatabaseManager(filePath);
-    const db = await dbManager.createConnection();
+    const db = new SQLiteDatabase(filePath);
+    db.openConnection();
 
     let data;
 
     if(urlType=='index'){
         if(url.includes('treesandshrubsonline')){
             data = await treesAndShrubScraper.scrapeIndexPage(url);
-        }else if(url.includes('treesandshrubsonline')){
+        }else if(url.includes('treesandshrubs')){
             data = await pfascraper.scrapeIndexPage(url);
         }
+        const dataToInsert = data.map(url => {
+            const done = 0;
+            return {
+                url,
+                done
+            };
+        });
 
-        console.log(await db.insertIntoTable('scrape_job', dataToInsert));
+        console.log(await db.insertIntoTable('scraper_jobs', dataToInsert));
     }
     else if(urlType=='plant'){
         if(url.includes('treesandshrubsonline')){
@@ -32,6 +35,7 @@ module.exports = async function ({ url, urlType, workerId }) {
         }else if(url.includes('treesandshrubsonline')){
             data = await pfascraper.scrapePlantPage(url);
         }
+
 
         const dataToInsert = {
             'Scientific Name': 'Abelia chinensis R. Br.',
@@ -55,12 +59,10 @@ module.exports = async function ({ url, urlType, workerId }) {
             // 'Conservation status': 'Least concern (LC)'
         };
 
-        console.log(await db.insertIntoTable('species', dataToInsert));
+        console.log(await db.insertIntoTable('species', [dataToInsert]));
     }
 
-    console.log(data);
-
-
+    db.closeConnection();
 };
 
 

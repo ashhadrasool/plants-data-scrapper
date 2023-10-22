@@ -1,17 +1,22 @@
 const puppeteer = require("puppeteer");
 
 const scrapeIndexPage = async function(url){
+    const browser = await puppeteer.launch({
+        headless: false
+    });
+    const page = await browser.newPage();
+
     await page.goto(url);
 
-    let hrefs = await page.evaluate(() => {
+    let urls = await page.evaluate(() => {
         const anchors = document.querySelectorAll('#ContentPlaceHolder1_gvresults a');
         const array =  Array.from(anchors, (a) => a.href);
 
         return array.filter(url => url.startsWith('http'));
     });
 
-
-    return hrefs;
+    await browser.close();
+    return urls;
 }
 
 const scrapePlantPage = async function(url) {

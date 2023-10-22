@@ -1,6 +1,11 @@
 const puppeteer = require("puppeteer");
 
 const scrapeIndexPage = async function(url){
+    const browser = await puppeteer.launch({
+        headless: false
+    });
+    const page = await browser.newPage();
+
     await page.goto(url);
 
     const urls = await page.evaluate(() => {
@@ -23,9 +28,9 @@ const scrapeIndexPage = async function(url){
 
         return hrefs;
     });
-    console.log(urls);
 
-    return hrefs;
+    await browser.close();
+    return urls;
 }
 
 scrapePlantPage = async function(url){
