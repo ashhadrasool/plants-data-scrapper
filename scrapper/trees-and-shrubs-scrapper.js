@@ -4,32 +4,38 @@ const scrapeIndexPage = async function(url){
     const browser = await puppeteer.launch({
         headless: false
     });
-    const page = await browser.newPage();
 
-    await page.goto(url);
+    try {
+        const page = await browser.newPage();
+        await page.goto(url);
 
-    const urls = await page.evaluate(() => {
-        const hrefs = [];
+        const urls = await page.evaluate(() => {
+            const hrefs = [];
 
-        const plantElements = document.querySelector('.uk-grid.uk-grid-stack');
+            const plantElements = document.querySelector('.uk-grid.uk-grid-stack');
 
-        const anchorElements = Array.from(plantElements.querySelectorAll('a'));
+            const anchorElements = Array.from(plantElements.querySelectorAll('a'));
 
-        anchorElements.forEach(anchor => {
-            const href = anchor.getAttribute('href');
-            if (href && !href.includes('#')) {
-                count = href.split('/').length;
-                if(count==5){
-                    hrefs.push('https://www.treesandshrubsonline.org'+href);
+            anchorElements.forEach(anchor => {
+                const href = anchor.getAttribute('href');
+                if (href && !href.includes('#')) {
+                    count = href.split('/').length;
+                    if(count==5){
+                        hrefs.push('https://www.treesandshrubsonline.org'+href);
+                    }
+
                 }
+            });
 
-            }
+            return hrefs;
         });
 
-        return hrefs;
-    });
+    }catch (e){
+        throw e;
+    }finally {
+        await browser.close();
+    }
 
-    await browser.close();
     return urls;
 }
 

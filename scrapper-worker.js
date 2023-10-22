@@ -1,33 +1,33 @@
 const {SQLiteDatabase} = require("./config/sqlite");
-const path = require('path');
 const treesAndShrubScraper = require('./scrapper/trees-and-shrubs-scrapper');
 const pfascraper = require('./scrapper/pfa-scrapper');
 
-const dbName = 'plants-sqlite.db';
-
 module.exports = async function ({ url, urlType, workerId }) {
-    const filePath = path.join(__dirname, dbName);
 
-    const db = new SQLiteDatabase(filePath);
+
+    const db = new SQLiteDatabase();
     db.openConnection();
 
     let data;
 
     if(urlType=='index'){
-        if(url.includes('treesandshrubsonline')){
-            data = await treesAndShrubScraper.scrapeIndexPage(url);
-        }else if(url.includes('treesandshrubs')){
-            data = await pfascraper.scrapeIndexPage(url);
-        }
-        const dataToInsert = data.map(url => {
-            const done = 0;
-            return {
-                url,
-                done
-            };
-        });
+        try {
+            if(url.includes('treesandshrubsonline')){
+                data = await treesAndShrubScraper.scrapeIndexPage(url);
+            }else if(url.includes('treesandshrubs')){
+                data = await pfascraper.scrapeIndexPage(url);
+            }
+            const dataToInsert = data.map(url => {
+                const done = 0;
+                return {
+                    url,
+                    done
+                };
+            });
 
-        console.log(await db.insertIntoTable('scraper_jobs', dataToInsert));
+            await db.insertIntoTable('scraper_jobs', dataToInsert);
+        }catch (e){
+        }
     }
     else if(urlType=='plant'){
         if(url.includes('treesandshrubsonline')){

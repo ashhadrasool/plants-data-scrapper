@@ -1,10 +1,13 @@
 const sqlite3 = require('sqlite3');
 
 const {valueSymbol} = require("piscina");
+const path = require("path");
+const dbName = 'plants-sqlite.db';
+const filePath = path.join(__dirname, '..', dbName);
 
 class SQLiteDatabase {
-    constructor(filename) {
-        this.filename = filename;
+    constructor() {
+        this.filename = filePath;
     }
 
     openConnection(){
@@ -43,6 +46,28 @@ class SQLiteDatabase {
             console.log("Done All Inserts")
         });
 
+    }
+
+    async selectTable(tableName, condition){
+
+        const conditions = Object.keys(condition)
+            .map(key => `${key} = ?`)
+            .join(' AND ');
+
+        const values = Object.values(condition);
+
+        const query = `SELECT * FROM ${tableName} WHERE ${conditions}`;
+
+        return new Promise((resolve, reject) => {
+            this.db.all(query, values, (err, rows) => {
+                if (err) {
+                    throw err;
+                }else {
+                    console.log('Row inserted successfully.');
+                    resolve(rows);
+                }
+            });
+        });
     }
 
     jsonToSqlColumnsAndValues(tableName, data) {
