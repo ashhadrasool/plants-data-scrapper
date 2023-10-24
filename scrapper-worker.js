@@ -27,6 +27,7 @@ module.exports = async function ({ url, urlType, workerId }) {
 
             await db.insertIntoTable('scraper_jobs', dataToInsert);
         }catch (e){
+            console.log(url, e);
         }
     }
     else if(urlType=='plant'){
@@ -61,7 +62,7 @@ module.exports = async function ({ url, urlType, workerId }) {
         //     // 'Conservation status': 'Least concern (LC)'
         // };
 
-        console.log(await db.insertIntoTable('species', [dataToInsert]));
+        await db.insertIntoTable('species', [dataToInsert]);
     }
 
     db.closeConnection();

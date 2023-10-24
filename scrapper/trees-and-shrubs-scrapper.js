@@ -1,8 +1,9 @@
 const puppeteer = require("puppeteer");
+const ConfigProperties = require("../config/config-properties");
 
 const scrapeIndexPage = async function(url){
     const browser = await puppeteer.launch({
-        headless: false
+        headless: ConfigProperties.HEADLESS
     });
 
     try {
@@ -41,7 +42,7 @@ const scrapeIndexPage = async function(url){
 
 scrapePlantPage = async function(url){
     const browser = await puppeteer.launch({
-        headless: false
+        headless: ConfigProperties.HEADLESS
     });
     const page = await browser.newPage();
 
@@ -49,7 +50,7 @@ scrapePlantPage = async function(url){
 
     let scrappedData = await page.evaluate(() => {
         const result = {};
-        result['Scientific Name'] = document.querySelector('h1').textContent.trim();
+        result['Scientific Name'] = [document.querySelector('h1').textContent.trim()];
 
         const h3Elements = Array.from(document.querySelectorAll('h3'));
 
@@ -60,7 +61,11 @@ scrapePlantPage = async function(url){
             }
             else if (h3.textContent.trim() === 'Common Names') {
                 const nextSibling = h3.nextElementSibling;
-                result['Common Name'] = nextSibling.textContent.trim();
+                const commonNames = [];
+                for(let i=0; i<nextSibling.childNodes.length;i++){
+                    commonNames.push(nextSibling.childNodes.item(i).textContent.trim());
+                }
+                result['Common Name'] = commonNames;
             }
             else if (h3.textContent.trim() === 'Synonyms') {
                 const nextSibling = h3.nextElementSibling;

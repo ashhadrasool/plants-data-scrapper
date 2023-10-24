@@ -1,8 +1,9 @@
 const puppeteer = require("puppeteer");
+const ConfigProperties = require("../config/config-properties");
 
 const scrapeIndexPage = async function(url){
     const browser = await puppeteer.launch({
-        headless: false
+        headless: ConfigProperties.HEADLESS
     });
     const page = await browser.newPage();
 
@@ -21,7 +22,7 @@ const scrapeIndexPage = async function(url){
 
 const scrapePlantPage = async function(url) {
     const browser = await puppeteer.launch({
-        headless: false
+        headless: ConfigProperties.HEADLESS
     });
     const page = await browser.newPage();
     await page.goto(url);
