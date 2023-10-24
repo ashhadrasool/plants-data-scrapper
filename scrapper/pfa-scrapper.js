@@ -47,7 +47,7 @@ const scrapePlantPage = async function(url) {
         result['Images Urls'] = Array.from(imgElements, (img) => img.getAttribute('src').replace('../', 'https://pfaf.org/'));
 
         const element = document.querySelector('#ContentPlaceHolder1_lbldisplatinname');
-        result['Scientific Name'] = element.textContent.trim();
+        result['Scientific Name'] = [element.textContent.trim()];
 
         const h2Elements = Array.from(document.querySelectorAll('h2'));
         for (const h2 of h2Elements) {

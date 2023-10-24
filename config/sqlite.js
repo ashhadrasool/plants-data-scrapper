@@ -98,10 +98,11 @@ class SQLiteDatabase {
 
         if(Array.isArray(data)){
             const keys = Object.keys(data[0]);
-            const values = data.map( d => {
-                return keys.map(key => Array.isArray(d[key]) ? JSON.stringify(d[key]) : d[key]);
-            })
-            const columns = keys.map(key => key.replace(' ', '_').toLowerCase());
+            const values = data.map( d =>
+                // return keys.map(key => Array.isArray(d[key]) ? JSON.stringify(d[key]) : d[key]);
+                keys.map(key => typeof d[key] === 'string'? d[key] : JSON.stringify(d[key]))
+            )
+            const columns = keys.map(key => key.replaceAll(' ', '_').toLowerCase());
 
             return {
                 columns,
@@ -110,8 +111,11 @@ class SQLiteDatabase {
 
         }
         const keys = Object.keys(data);
-        const values = keys.map(key => Array.isArray(data[key]) ? JSON.stringify(data[key]) : data[key]);
-        const columns = keys.map(key => key.replace(' ', '_').toLowerCase());
+        const values = keys.map(key =>
+            // Array.isArray(data[key]) ? JSON.stringify(data[key]) : data[key]
+            typeof data[key] === 'string' ? data[key] : JSON.stringify(data[key])
+        );
+        const columns = keys.map(key => key.replaceAll(' ', '_').toLowerCase());
 
         return {
             columns,

@@ -32,32 +32,34 @@ module.exports = async function ({ url, urlType, workerId }) {
     else if(urlType=='plant'){
         if(url.includes('treesandshrubsonline')){
             data = await treesAndShrubScraper.scrapePlantPage(url);
-        }else if(url.includes('treesandshrubsonline')){
+        }else if(url.includes('pfaf.org')){
             data = await pfascraper.scrapePlantPage(url);
         }
 
 
-        const dataToInsert = {
-            'Scientific Name': 'Abelia chinensis R. Br.',
-            // Genus: 'Abelia',
-            'Common Name': 'Chinese Abelia',
-            // Synonyms: [
-            //     'Abelia rupestris Lindl.',
-            //     'Linnaea chinensis (R. Br.) A. Braun & Vatke',
-            //     'Linnaea ruprestris (Lindl.) A. Braun & Vatke',
-            //     'Abelia hanceana M. Martens ex Hance',
-            //     'Abelia ionandra Hayata',
-            //     'Abelia lipoensis M.T. An & G.Q. Gou',
-            //     'Linnaea aschersoniana Graebn.'
-            // ],
-            Varieties: [ 'China Rose', 'Keiser', 'White Surprise' ],
-            // Distribution: 'China Fujian, Guangdong, Guangxi, Guizhou, Henan, Hubei, Hunan, Jiangsu, Jiangxi, Sichuan, Yunnan, Zhejiang. Japan Ryukyu Islands Taiwan',
-            // Habitat: 'Mountain forests to 1500 m asl.',
-            // 'USDA Hardiness Zone': '7',
-            // 'RHS Hardiness Rating': 'RHS Hardiness Rating H5',
-            // Awards: 'AGM',
-            // 'Conservation status': 'Least concern (LC)'
-        };
+        const dataToInsert = data;
+
+        // const dataToInsert = {
+        //     'Scientific Name': 'Abelia chinensis R. Br.',
+        //     // Genus: 'Abelia',
+        //     'Common Name': 'Chinese Abelia',
+        //     // Synonyms: [
+        //     //     'Abelia rupestris Lindl.',
+        //     //     'Linnaea chinensis (R. Br.) A. Braun & Vatke',
+        //     //     'Linnaea ruprestris (Lindl.) A. Braun & Vatke',
+        //     //     'Abelia hanceana M. Martens ex Hance',
+        //     //     'Abelia ionandra Hayata',
+        //     //     'Abelia lipoensis M.T. An & G.Q. Gou',
+        //     //     'Linnaea aschersoniana Graebn.'
+        //     // ],
+        //     Varieties: [ 'China Rose', 'Keiser', 'White Surprise' ],
+        //     // Distribution: 'China Fujian, Guangdong, Guangxi, Guizhou, Henan, Hubei, Hunan, Jiangsu, Jiangxi, Sichuan, Yunnan, Zhejiang. Japan Ryukyu Islands Taiwan',
+        //     // Habitat: 'Mountain forests to 1500 m asl.',
+        //     // 'USDA Hardiness Zone': '7',
+        //     // 'RHS Hardiness Rating': 'RHS Hardiness Rating H5',
+        //     // Awards: 'AGM',
+        //     // 'Conservation status': 'Least concern (LC)'
+        // };
 
         console.log(await db.insertIntoTable('species', [dataToInsert]));
     }

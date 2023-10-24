@@ -56,16 +56,16 @@ scrapePlantPage = async function(url){
         for (const h3 of h3Elements) {
             if (h3.textContent.trim() === 'Genus') {
                 const nextSibling = h3.nextElementSibling;
-                result['Genus'] = nextSibling.textContent.trim();
+                result['Genus'] = nextSibling.childNodes.item(0).textContent.trim();
             }
             else if (h3.textContent.trim() === 'Common Names') {
                 const nextSibling = h3.nextElementSibling;
-                result['Common Names'] = nextSibling.textContent.trim();
+                result['Common Name'] = nextSibling.textContent.trim();
             }
             else if (h3.textContent.trim() === 'Synonyms') {
                 const nextSibling = h3.nextElementSibling;
                 const synonymsList = Array.from(nextSibling.querySelectorAll('li')).map(li=> li.textContent);
-                result['Synonyms'] = synonymsList;
+                result['Other Name'] = synonymsList;
             }
 
         }
@@ -80,11 +80,15 @@ scrapePlantPage = async function(url){
                 result['Habitat'] = p.textContent.split('Habitat')[1].trim();
             }
             else if (childNodes.item(0)?.textContent.trim() === 'USDA Hardiness Zone') {
-                result['USDA Hardiness Zone'] = p.textContent.split('USDA Hardiness Zone')[1].trim();
+                const values = p.textContent.split('USDA Hardiness Zone')[1].trim().split('-');
+                if(values.length==1){
+                    values.push(values[0]);
+                }
+                result['Hardiness'] = {"min":values[0],"max":values[1],"zone":"USDA"};
             }
-            else if (childNodes.item(0)?.textContent.trim() === 'RHS Hardiness Rating') {
-                result['RHS Hardiness Rating'] = p.textContent.trim();
-            }
+            // else if (childNodes.item(0)?.textContent.trim() === 'RHS Hardiness Rating') {
+            //     result['RHS Hardiness'] = p.textContent.split('RHS Hardiness Rating')[1].trim();
+            // }
             else if (childNodes.item(0)?.textContent.trim() === 'Awards') {
                 result['Awards'] = p.textContent.split('Awards')[1].trim();
             }
