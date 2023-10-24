@@ -1,6 +1,6 @@
 
 class ConfigProperties{
-    static HEADLESS = true
+    static HEADLESS = "new"
 }
 
 module.exports = ConfigProperties
