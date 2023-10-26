@@ -10,11 +10,27 @@ class SQLiteDatabase {
         this.filename = filePath;
     }
 
-    openConnection(){
-        this.db = new sqlite3.Database(this.filename);
+    async openConnection(){
+        new Promise((resolve, reject) => {
+            this.db = new sqlite3.Database(this.filename, function(err, rows) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve([this]);
+                }
+            });
+        })
     }
-    closeConnection(){
-        return this.db.close();
+    async closeConnection(){
+        return new Promise((resolve, reject) => {
+            this.db.close( function(err, rows) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve([this]);
+                }
+            });
+        })
     }
 
     async insertIntoTable(tableName, dataToInsert){
@@ -34,7 +50,6 @@ class SQLiteDatabase {
                     if (err) {
                         reject(err);
                     } else {
-                        console.log('Row inserted successfully.');
                         resolve([this]);
                     }
                 });
@@ -42,10 +57,9 @@ class SQLiteDatabase {
         }
         // await promises[0];
 
-        await Promise.all(promises).then(() => {
-            console.log("Done All Inserts")
-        });
-
+        return Promise.all(promises).then(() => {
+            // console.log("Done All Inserts")
+            });
     }
 
     async selectTable(tableName, condition){
@@ -63,7 +77,6 @@ class SQLiteDatabase {
                 if (err) {
                     throw err;
                 }else {
-                    console.log('Row inserted successfully.');
                     resolve(rows);
                 }
             });
@@ -87,7 +100,6 @@ class SQLiteDatabase {
                 if (err) {
                     reject(err);
                 }else {
-                    console.log('Row updated successfully.');
                     resolve(this.changes);
                 }
             });

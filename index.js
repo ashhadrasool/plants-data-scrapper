@@ -17,6 +17,13 @@ const runIndexScrapperJobs = async () => {
         });
     }
 
+    for(let i = 0; i<26; i++) {
+        jobList.push({
+            url: `https://pfaf.org/user/DatabaseSearhResult.aspx?LatinName=${String.fromCharCode(65+i)}%/`,
+            urlType: 'index'
+        });
+    }
+
     const jobPromises = [];
 
     for (let i = 0; i < jobList.length; i++) {
@@ -33,38 +40,42 @@ const runIndexScrapperJobs = async () => {
 const runPageScrapperJobs = async () => {
 
     const sqLiteDatabase = new SQLiteDatabase();
-    sqLiteDatabase.openConnection();
-    let jobList = await sqLiteDatabase.selectTable('scraper_jobs', {done: 0});
+    await sqLiteDatabase.openConnection();
+    // let jobList = await sqLiteDatabase.selectTable('scraper_jobs', {done: 0});
 
     // jobList = jobList.slice(0,1);
-    // const jobList = [
+    const jobList = [
+    {
+    url: 'https://www.treesandshrubsonline.org/articles/abies/abies-cephalonica/',
+    urlType: 'plant'
+    },
     // {
-    // url: 'https://www.treesandshrubsonline.org/articles/abies/abies-cephalonica/',
-    // urlType: 'plant'
+    //     url: 'https://pfaf.org/User/Plant.aspx?LatinName=Pteridium+aquilinum',
+    //     urlType: 'plant'
     // },
-    // // {
-    // //     url: 'https://pfaf.org/User/Plant.aspx?LatinName=Pteridium+aquilinum',
-    // //     urlType: 'plant'
-    // // },
-    // ]
+    ]
 
     const jobPromises = [];
 
     for (let i = 0; i < jobList.length; i++) {
         const url = jobList[i].url;
         const urlType = 'plant';
-        jobPromises.push(pool.run({url, urlType, worker: i, }, options).then( ()=>
-            sqLiteDatabase.updateTable('scraper_jobs',{done: 1}, {url})
-        ).catch(e => console.log(e)));
+        jobPromises.push(pool.run({url, urlType, worker: i, }, options).then( ()=> {
+            sqLiteDatabase.updateTable('scraper_jobs',{done: 1}, {url});
+            console.log(`Scrapped job ${i+1}: ${url}`);
+        }
+        ).catch(e => console.log('error in scrapping:', url, e)));
     }
     await Promise.all(jobPromises).then(() => {
-        console.log("Done")
+        console.log("Done All Scrapper Jobs")
     });
 
+    await sqLiteDatabase.closeConnection();
 }
 
-// runIndexScrapperJobs();
-runPageScrapperJobs();
 
-
+(async ()=>  {
+    // await runIndexScrapperJobs();
+    await runPageScrapperJobs();
+})();
 
