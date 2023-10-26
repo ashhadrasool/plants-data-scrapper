@@ -1,0 +1,24 @@
+
+
+FOR RUNNING THE PROJECT:
+1. install node js
+from https://nodejs.org/en
+
+2. in terminal at the project root directory,
+ run the command (below command would install all the dependencies i.e libraries required by the project mentioned in package.json)
+npm install
+
+3. for running the project, in terminal at the project root directory,
+run the command: (the below command would run the index.js file)
+npm run start
+
+FOR ACCESSING DATA/EXPORTING TO MY SQL QUERIES OR CSV FILE:
+1. download TablePlus (this is a db client i.e which lets u connect to a db server)
+
+2. make a new connection of sqlite, use the file plants-sqlite.db as the db source
+(Since I have set up the db as sqlite, it's actually not a server, but just a file: plants-sqlite.db)
+
+
+
+
+
