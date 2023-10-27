@@ -19,16 +19,6 @@ const scrapeIndexPage = async function(url){
         });
     });
 
-    let urls = await page.evaluate(() => {
-        const table = document.querySelector('table[id="ContentPlaceHolder1_gvresults"]');
-        const anchors = table.querySelectorAll('a');
-        const array =  Array.from(anchors, (a) => a.href);
-
-        return array.filter(url => url.includes('Plant.aspx')).sort();
-    });
-
-    console.log(urls.length);
-
     urls = await page.evaluate(() => {
         const table = document.querySelector('table[id="ContentPlaceHolder1_gvresults"]');
         const anchors = document.querySelectorAll('[href]');
