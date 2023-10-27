@@ -7,27 +7,37 @@ const scrapeIndexPage = async function(url){
     });
     const page = await browser.newPage();
 
-    await page.setRequestInterception(true);
-    // @ts-ignore
-    page.on('request', (request) => {
-        if (request.resourceType() === 'image') {
-            request.abort();
-        } else {
-            request.continue();
-        }
-    });
     await page.goto('https://pfaf.org/user/', { waitUntil: 'domcontentloaded' });
 
     await page.click(`a[href="${url.split('/User/')[1].slice(0,-1)}"]`);
 
-    await page.waitForSelector('table[id="ContentPlaceHolder1_gvresults"]', {timeout: 10000});
+    await page.waitForSelector('table[id="ContentPlaceHolder1_gvresults"]');
+
+    await page.evaluate(() => {
+        return new Promise(resolve => {
+            setTimeout(resolve, 5000); // 10000 milliseconds (10 seconds)
+        });
+    });
 
     let urls = await page.evaluate(() => {
-        const anchors = document.querySelectorAll('#ContentPlaceHolder1_gvresults a');
+        const table = document.querySelector('table[id="ContentPlaceHolder1_gvresults"]');
+        const anchors = table.querySelectorAll('a');
         const array =  Array.from(anchors, (a) => a.href);
 
-        return array.filter(url => url.startsWith('http'));
+        return array.filter(url => url.includes('Plant.aspx')).sort();
     });
+
+    console.log(urls.length);
+
+    urls = await page.evaluate(() => {
+        const table = document.querySelector('table[id="ContentPlaceHolder1_gvresults"]');
+        const anchors = document.querySelectorAll('[href]');
+        const array =  Array.from(anchors, (a) => a.href);
+
+        return array.filter(url => url && url.includes('https://pfaf.org/user/Plant.aspx?LatinName=')).sort();
+    });
+
+    console.log(urls.length);
 
     await browser.close();
     return urls;

@@ -1,8 +1,8 @@
 
 class ConfigProperties{
-    static HEADLESS = false
-    static MIN_THREADS = 2;
-    static MAX_THREADS = 4;
+    static HEADLESS = false;
+    static MIN_THREADS = 1;
+    static MAX_THREADS = 1;
 }
 
 module.exports = ConfigProperties

@@ -24,13 +24,13 @@ module.exports = async function ({ url, urlType, workerId }) {
                 };
             });
 
+            const insertionPromises = []
             for(let i=0; i< dataToInsert.length; i++){
-                try {
-                    await db.insertIntoTable('scraper_jobs', dataToInsert[i]);
-                }catch (e){
-                    console.log(dataToInsert[i], e);
-                }
+                insertionPromises.push( db.insertIntoTable('scraper_jobs', dataToInsert[i]).catch((e) =>
+                    console.log(dataToInsert[i].url, e)
+                ));
             }
+            await Promise.all(insertionPromises);
 
             // await db.insertIntoTable('scraper_jobs', dataToInsert);
         }catch (e){
