@@ -14,18 +14,25 @@ module.exports = async function ({ url, urlType, workerId }) {
         try {
             if(url.includes('treesandshrubsonline')){
                 data = await treesAndShrubScraper.scrapeIndexPage(url);
-            }else if(url.includes('treesandshrubs')){
+            }else if(url.includes('pfaf.org')){
                 data = await pfascraper.scrapeIndexPage(url);
             }
-            const dataToInsert = data.map(url => {
-                const done = 0;
+            const dataToInsert = data.map(scrappedUrl => {
                 return {
-                    url,
-                    done
+                    url: scrappedUrl,
+                    done : 0
                 };
             });
 
-            await db.insertIntoTable('scraper_jobs', dataToInsert);
+            for(let i=0; i< dataToInsert.length; i++){
+                try {
+                    await db.insertIntoTable('scraper_jobs', dataToInsert[i]);
+                }catch (e){
+                    console.log(dataToInsert[i], e);
+                }
+            }
+
+            // await db.insertIntoTable('scraper_jobs', dataToInsert);
         }catch (e){
             console.log(url, e);
         }

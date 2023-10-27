@@ -6,11 +6,12 @@ const scrapeIndexPage = async function(url){
         headless: ConfigProperties.HEADLESS
     });
 
+    let urls = [];
     try {
         const page = await browser.newPage();
         await page.goto(url);
 
-        const urls = await page.evaluate(() => {
+        urls = await page.evaluate(() => {
             const hrefs = [];
 
             const plantElements = document.querySelector('.uk-grid.uk-grid-stack');

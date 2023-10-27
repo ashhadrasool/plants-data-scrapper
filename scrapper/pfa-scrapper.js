@@ -7,7 +7,20 @@ const scrapeIndexPage = async function(url){
     });
     const page = await browser.newPage();
 
-    await page.goto(url);
+    await page.setRequestInterception(true);
+    // @ts-ignore
+    page.on('request', (request) => {
+        if (request.resourceType() === 'image') {
+            request.abort();
+        } else {
+            request.continue();
+        }
+    });
+    await page.goto('https://pfaf.org/user/', { waitUntil: 'domcontentloaded' });
+
+    await page.click(`a[href="${url.split('/User/')[1].slice(0,-1)}"]`);
+
+    await page.waitForSelector('table[id="ContentPlaceHolder1_gvresults"]', {timeout: 10000});
 
     let urls = await page.evaluate(() => {
         const anchors = document.querySelectorAll('#ContentPlaceHolder1_gvresults a');

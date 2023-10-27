@@ -1,8 +1,10 @@
 const Piscina = require("piscina");
 const {SQLiteDatabase} = require("./config/sqlite");
+const ConfigProperties = require("./config/config-properties");
+
 const pool = new Piscina({
-    minThreads: 2,
-    maxThreads: 4
+    minThreads: ConfigProperties.MIN_THREADS,
+    maxThreads: ConfigProperties.MAX_THREADS
 });
 const options = {
     filename: './scrapper-worker.js',
@@ -10,16 +12,16 @@ const options = {
 
 const runIndexScrapperJobs = async () => {
     const jobList = [];
-    for(let i = 0; i<26; i++) {
-        jobList.push({
-            url: `https://www.treesandshrubsonline.org/articles/${String.fromCharCode(65+i)}/`,
-            urlType: 'index'
-        });
-    }
+    // for(let i = 0; i<26; i++) {
+    //     jobList.push({
+    //         url: `https://www.treesandshrubsonline.org/articles/${String.fromCharCode(65+i)}/`,
+    //         urlType: 'index'
+    //     });
+    // }
 
     for(let i = 0; i<26; i++) {
         jobList.push({
-            url: `https://pfaf.org/user/DatabaseSearhResult.aspx?LatinName=${String.fromCharCode(65+i)}%/`,
+            url: `https://pfaf.org/User/DatabaseSearhResult.aspx?LatinName=${String.fromCharCode(65+i)}%/`,
             urlType: 'index'
         });
     }
@@ -75,7 +77,7 @@ const runPageScrapperJobs = async () => {
 
 
 (async ()=>  {
-    // await runIndexScrapperJobs();
-    await runPageScrapperJobs();
+    await runIndexScrapperJobs();
+    // await runPageScrapperJobs();
 })();
 
