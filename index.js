@@ -77,7 +77,7 @@ const runPageScrapperJobs = async () => {
 
 
 (async ()=>  {
-    await runIndexScrapperJobs();
-    // await runPageScrapperJobs();
+    // await runIndexScrapperJobs(); //disabled because all index pages are already scrapped and are part of db,
+    await runPageScrapperJobs();
 })();
 

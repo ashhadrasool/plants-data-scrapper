@@ -18,7 +18,23 @@ FOR ACCESSING DATA/EXPORTING TO MY SQL QUERIES OR CSV FILE:
 2. make a new connection of sqlite, use the file plants-sqlite.db as the db source
 (Since I have set up the db as sqlite, it's actually not a server, but just a file: plants-sqlite.db)
 
+CODE:
 
+runIndexScrapperJobs();
+in index file is commented out as all the index pages are scrapped and urls from those pages
+are put in db table scrapper_jobs.
+
+the reason for decoupling the index pages and plant pages is: sometimes in scrapping random error occurs
+during scrapping of a page, and script crashes. So in those cases, all the stuff gets started from zero i.e
+we wouldnt want the index pages to be scrapped again.
+
+runPageScrapperJobs();
+this function would pull the jobs from scrapper_jobs table in db, and run the plant page scrapping
+
+Also when a page is successfully scrapped, its state is marked done (done column in the scrapper_jobs table )
+so in case of error (exception) that done wont be marked as 1 (and it would remain 0).
+
+Hence, later on i can always debug the failing pages.
 
 
 
