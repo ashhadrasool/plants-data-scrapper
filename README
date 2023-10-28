@@ -35,5 +35,11 @@ so in case of error (exception) that done wont be marked as 1 (and it would rema
 
 Hence, later on i can always debug the failing pages.
 
+generateCSV();
+
+this function generates a csv containing all the scrapped plants pages
+Once all the plants pages are scrapped, you will have a csv.
+
 CONFIG-PROPERTIES:
 MIN_THREADS and MAX_THREADS configure how many parallel scrapping jobs you want to run
+

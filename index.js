@@ -110,8 +110,8 @@ const generateCSV = async () => {
 
 (async ()=>  {
     // await runIndexScrapperJobs(); //disabled because all index pages are already scrapped and are part of db,
-    // await runPageScrapperJobs();
 
-    await generateCSV();
+    await runPageScrapperJobs();
+    await generateCSV(); // enable when want to generate output.csv
 })();
 
