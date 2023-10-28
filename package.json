@@ -11,6 +11,7 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "csv-writer": "^1.6.0",
     "piscina": "^4.1.0",
     "puppeteer": "^21.3.8",
     "sqlite": "^5.0.1",

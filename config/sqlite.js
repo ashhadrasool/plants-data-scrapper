@@ -64,13 +64,22 @@ class SQLiteDatabase {
 
     async selectTable(tableName, condition){
 
-        const conditions = Object.keys(condition)
-            .map(key => `${key} = ?`)
-            .join(' AND ');
+        let conditions;
+        let values;
+        let query;
 
-        const values = Object.values(condition);
+        if(condition){
+            conditions = Object.keys(condition)
+                .map(key => `${key} = ?`)
+                .join(' AND ');
 
-        const query = `SELECT * FROM ${tableName} WHERE ${conditions}`;
+            values = Object.values(condition);
+
+            query = `SELECT * FROM ${tableName} WHERE ${conditions}`;
+        }else{
+            query = `SELECT * FROM ${tableName}`;
+        }
+
 
         return new Promise((resolve, reject) => {
             this.db.all(query, values, (err, rows) => {

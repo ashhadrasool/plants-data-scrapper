@@ -1,6 +1,7 @@
 const Piscina = require("piscina");
 const {SQLiteDatabase} = require("./config/sqlite");
 const ConfigProperties = require("./config/config-properties");
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 const pool = new Piscina({
     minThreads: ConfigProperties.MIN_THREADS,
@@ -75,9 +76,42 @@ const runPageScrapperJobs = async () => {
     await sqLiteDatabase.closeConnection();
 }
 
+const generateCSV = async () => {
+
+    const sqLiteDatabase = new SQLiteDatabase();
+    await sqLiteDatabase.openConnection();
+
+    let data = await sqLiteDatabase.selectTable('species');
+
+    data.forEach(row => delete row['id']);
+
+    const headers = Object.keys(data[0]).map( key => {
+        return {
+            id: key,
+            title: key
+        }
+    });
+    const csvWriter = createCsvWriter({
+        path: 'output.csv',
+        header: headers,
+    });
+
+    data = [data[0]];
+    csvWriter.writeRecords(data)
+        .then(() => {
+            console.log('CSV file has been written');
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+
+}
+
 
 (async ()=>  {
     // await runIndexScrapperJobs(); //disabled because all index pages are already scrapped and are part of db,
-    await runPageScrapperJobs();
+    // await runPageScrapperJobs();
+
+    await generateCSV();
 })();
 
