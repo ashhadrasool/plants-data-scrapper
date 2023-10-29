@@ -44,19 +44,9 @@ const runPageScrapperJobs = async () => {
 
     const sqLiteDatabase = new SQLiteDatabase();
     await sqLiteDatabase.openConnection();
-    // let jobList = await sqLiteDatabase.selectTable('scraper_jobs', {done: 0});
+    let jobList = await sqLiteDatabase.selectTable('scraper_jobs', {done: 0});
 
-    // jobList = jobList.slice(0,1);
-    const jobList = [
-    {
-    url: 'https://www.treesandshrubsonline.org/articles/abies/abies-cephalonica/',
-    urlType: 'plant'
-    },
-    // {
-    //     url: 'https://pfaf.org/User/Plant.aspx?LatinName=Pteridium+aquilinum',
-    //     urlType: 'plant'
-    // },
-    ]
+    // jobList = jobList.slice(0,1);  // if you want to debug and run some jobs
 
     const jobPromises = [];
 
