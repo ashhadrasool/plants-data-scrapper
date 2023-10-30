@@ -27,8 +27,6 @@ const scrapeIndexPage = async function(url){
         return array.filter(url => url && url.includes('https://pfaf.org/user/Plant.aspx?LatinName=')).sort();
     });
 
-    console.log(urls.length);
-
     await browser.close();
     return urls;
 }
@@ -84,10 +82,9 @@ const scrapePlantPage = async function(url) {
                 const textElement = document.querySelector('#ContentPlaceHolder1_txtEdibleUses');
                 const text = textElement.innerHTML;
 
-                // Split the text by <br> tags and return the last part
-                const parts = text.split('<br>');
-                const lastPart = parts[parts.length - 1];
-                console.log('lastPart', lastPart);
+                // const parts = text.split('<br>');
+                // const lastPart = parts[parts.length - 1];
+                // console.log('lastPart', lastPart);
 
                 result['Edible Uses'] = nextSibling.textContent.trim();
             }
@@ -142,7 +139,6 @@ const scrapePlantPage = async function(url) {
 
     await browser.close();
 
-    console.log(scrappedData);
     return scrappedData;
 }
 
