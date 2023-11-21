@@ -44,8 +44,10 @@ module.exports = async function ({ url, urlType, workerId }) {
             data = await pfascraper.scrapePlantPage(url);
         }
 
-        const dataToInsert = data;
-        await db.insertIntoTable('species', [dataToInsert]);
+        // const dataToInsert = data;
+        // await db.insertIntoTable('species', [dataToInsert]);
+
+        return data;
     }
 
     await db.closeConnection();
